@@ -1,0 +1,56 @@
+/* Add to styles.css */
+.booking-details-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.booking-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.booking-info {
+  display: flex;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.booking-image img {
+  width: 300px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.booking-meta {
+  flex: 1;
+}
+
+.booking-meta h2 {
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.booking-meta p {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.booking-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .booking-info {
+    flex-direction: column;
+  }
+  
+  .booking-image img {
+    width: 100%;
+  }
+}
