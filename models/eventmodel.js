@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bookingSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'user',
     required: true
   },
   username: {
@@ -12,7 +12,7 @@ const bookingSchema = new mongoose.Schema({
   },
   venue: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Venue',
+    ref: 'venue',
     required: true
   },
   venueName: { // 🔥 optional: easy to query by name without populating
@@ -39,7 +39,11 @@ const bookingSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  qrCode: {
+    type: String // This will store the base64 image data for the QR
   }
+  
 });
 
 module.exports = mongoose.model('Booking', bookingSchema);

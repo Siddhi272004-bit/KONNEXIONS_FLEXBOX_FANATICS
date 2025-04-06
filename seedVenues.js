@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Venue = require('./models/venuemodel');
+const Venue = require('./models/venue');
 
 mongoose.connect('mongodb+srv://s51741248:h2ZNgA7GILexRGbN@cluster0.82ebe.mongodb.net/Cluster0?retryWrites=true&w=majority', {
   useNewUrlParser: true,
