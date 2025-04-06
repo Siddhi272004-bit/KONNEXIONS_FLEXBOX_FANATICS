@@ -64,17 +64,22 @@
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
+        credentials: 'include' // Important for cookies
       })
       .then(response => response.text())
       .then(data => {
         if(data.includes('Welcome back')) {
+          // Redirect to dashboard with user data
           window.location.href = 'dashboard.html';
         } else {
           alert(data);
         }
       })
-      .catch(error => console.error('Error:', error));
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Login failed. Please try again.');
+      });
     });
   });
 </script>
