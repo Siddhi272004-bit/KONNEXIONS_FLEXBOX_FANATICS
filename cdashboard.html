@@ -119,5 +119,74 @@
       <p>&copy; 2025 BookEasy. All rights reserved.</p>
     </div>
   </footer>
+
+      <!-- Add this before closing body tag -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Fetch user data and bookings
+    fetch('http://localhost:4001/userDashboardData', {
+      credentials: 'include' // Important for sending cookies
+    })
+    .then(response => {
+      if (!response.ok) {
+        window.location.href = 'cust.html';
+        throw new Error('Not authenticated');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Update user info
+      document.querySelector('.user-name').textContent = data.user.username;
+      document.querySelector('.profile-avatar').src = 'prf.png';
+      document.querySelector('h1').textContent = `Welcome Back, ${data.user.username}`;
+      
+      // Render bookings
+      const eventsGrid = document.querySelector('.events-grid');
+      eventsGrid.innerHTML = '';
+      
+      data.bookings.forEach(booking => {
+        const eventCard = document.createElement('div');
+        eventCard.className = 'event-card';
+        eventCard.innerHTML = `
+          <img src="${booking.venue.image || 'default-event.jpg'}" alt="${booking.venue.name}">
+          <div class="event-details">
+            <h3>${booking.venue.name}</h3>
+            <p class="location">${booking.venue.location}</p>
+            <p class="date">${new Date(booking.eventDate).toLocaleDateString()} • ${booking.startTime}</p>
+            <div class="event-actions">
+              <button class="btn secondary small" onclick="viewBookingDetails('${booking._id}')">Details</button>
+              <button class="btn primary small" onclick="cancelBooking('${booking._id}')">Cancel</button>
+            </div>
+          </div>
+        `;
+        eventsGrid.appendChild(eventCard);
+      });
+    })
+    .catch(error => console.error('Error:', error));
+  });
+
+  function viewBookingDetails(bookingId) {
+    window.location.href = `booking-details.html?id=${bookingId}`;
+  }
+
+  function cancelBooking(bookingId) {
+    if (confirm('Are you sure you want to cancel this booking?')) {
+      fetch(`http://localhost:4001/cancelBooking/${bookingId}`, {
+        method: 'POST',
+        credentials: 'include'
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Booking cancelled successfully');
+          window.location.reload();
+        } else {
+          alert(data.message);
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  }
+</script>
 </body>
 </html>
