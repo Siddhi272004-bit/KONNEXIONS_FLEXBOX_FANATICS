@@ -97,4 +97,40 @@
     </div>
   </footer>
 </body>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Handle registration links
+    document.querySelector('.btn.primary[href="register.html"]').addEventListener('click', function(e) {
+      e.preventDefault();
+      window.location.href = 'register.html';
+    });
+
+    // Handle login buttons
+    document.querySelector('.btn.primary[href="cust.html"]').addEventListener('click', function(e) {
+      e.preventDefault();
+      window.location.href = 'cust.html';
+    });
+
+    document.querySelector('.btn.secondary[href="vendor.html"]').addEventListener('click', function(e) {
+      e.preventDefault();
+      window.location.href = 'vendor.html';
+    });
+
+    // Search functionality
+    document.querySelector('.search-bar button').addEventListener('click', function() {
+      const searchTerm = document.querySelector('.search-bar input').value;
+      const category = document.querySelector('.search-bar select').value;
+      
+      fetch(`http://localhost:4001/searchVenues?term=${searchTerm}&category=${category}`)
+        .then(response => response.json())
+        .then(data => {
+          // Redirect to search results page or display results
+          console.log('Search results:', data);
+          alert(`Found ${data.length} venues matching your search`);
+        })
+        .catch(error => console.error('Error:', error));
+    });
+  });
+</script>
 </html>
