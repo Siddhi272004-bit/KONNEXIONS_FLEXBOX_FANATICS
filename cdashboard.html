@@ -122,34 +122,32 @@
 
       <!-- Add this before closing body tag -->
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Fetch user data
+  document.addEventListener('DOMContentLoaded', function () {
     fetch('http://localhost:4001/getUserData', {
-      credentials: 'include' // Important for sending cookies
+      credentials: 'include'
     })
     .then(response => {
       if (!response.ok) {
-        window.location.href = 'cust.html'; // Redirect to login if not authenticated
+        window.location.href = 'cust.html'; // Redirect if not authenticated
         throw new Error('Not authenticated');
       }
       return response.json();
     })
     .then(data => {
-      // Update user info in the dashboard
-      document.querySelector('.user-name').textContent = data.user.username;
+      const user = data.user;
+      document.querySelector('.user-name').textContent = user.username;
       document.querySelector('.profile-avatar').src = 'prf.png';
-      document.querySelector('.user-profile h3').textContent = data.user.username;
-      document.querySelector('.user-profile p').textContent = data.user.email;
-      document.querySelector('h1').textContent = Welcome Back, ${data.user.username};
-      
-      // Fetch and display bookings
+      document.querySelector('.user-profile h3').textContent = user.username;
+      document.querySelector('.user-profile p').textContent = user.email;
+      document.querySelector('h1').textContent = `Welcome Back, ${user.username}`;
+
       fetchBookings();
     })
     .catch(error => {
-      console.error('Error:', error);
+      console.error('Auth Error:', error);
       window.location.href = 'cust.html';
     });
-    
+
     function fetchBookings() {
       fetch('http://localhost:4001/getUserBookings', {
         credentials: 'include'
@@ -158,15 +156,15 @@
       .then(bookings => {
         const eventsGrid = document.querySelector('.events-grid');
         eventsGrid.innerHTML = '';
-        
+
         bookings.forEach(booking => {
           const eventCard = document.createElement('div');
           eventCard.className = 'event-card';
           eventCard.innerHTML = `
-            <img src="${booking.venue.image || 'default-event.jpg'}" alt="${booking.venueName}">
+            <img src="${booking.venue?.image || 'default-event.jpg'}" alt="${booking.venueName}">
             <div class="event-details">
               <h3>${booking.venueName}</h3>
-              <p class="location">${booking.venue.location}</p>
+              <p class="location">${booking.venue?.location || 'Unknown Location'}</p>
               <p class="date">${new Date(booking.eventDate).toLocaleDateString()} • ${booking.startTime}</p>
               <div class="event-actions">
                 <button class="btn secondary small" onclick="viewBookingDetails('${booking._id}')">Details</button>
@@ -182,12 +180,12 @@
   });
 
   function viewBookingDetails(bookingId) {
-    window.location.href = booking-details.html?id=${bookingId};
+    window.location.href = `booking-details.html?id=${bookingId}`;
   }
 
   function cancelBooking(bookingId) {
     if (confirm('Are you sure you want to cancel this booking?')) {
-      fetch(http://localhost:4001/cancelBooking/${bookingId}, {
+      fetch(`http://localhost:4001/cancelBooking/${bookingId}`, {
         method: 'POST',
         credentials: 'include'
       })
@@ -197,12 +195,13 @@
           alert('Booking cancelled successfully');
           window.location.reload();
         } else {
-          alert(data.message);
+          alert(data.message || 'Failed to cancel booking');
         }
       })
-      .catch(error => console.error('Error:', error));
+      .catch(error => console.error('Cancel error:', error));
     }
   }
 </script>
+
 </body>
 </html>
