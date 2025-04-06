@@ -114,11 +114,27 @@ app.get('/logoutVendor', function (req, res) {
 
 
 // EVENT BOOKING
+const venueModel = require('./models/venue'); // ✅ Make sure it's imported
+
+// EVENT BOOKING
 app.post('/bookVenue', async (req, res) => {
-    const { userId, venueId, eventDate, startTime, endTime } = req.body;
-  
-    // Check for conflicts
-    const conflictingBookings = await Booking.find({
+  const { userId, venueId, eventDate, startTime, endTime } = req.body;
+
+  try {
+    // ✅ Step 1: Check if venue exists
+    const venue = await venueModel.findById(venueId);
+    if (!venue) {
+      return res.status(404).send("Venue not found");
+    }
+
+    // ✅ Step 2: Check if user exists (optional but good to have)
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    // ✅ Step 3: Check for conflicting bookings
+    const conflictingBookings = await bookingModel.find({
       venue: venueId,
       eventDate: new Date(eventDate),
       $or: [
@@ -128,23 +144,29 @@ app.post('/bookVenue', async (req, res) => {
         }
       ]
     });
-  
+
     if (conflictingBookings.length > 0) {
       return res.send("This venue is already booked at that time.");
     }
-  
-    // Create booking
-    const booking = await Booking.create({
+
+    // ✅ Step 4: Create booking with user name and venue reference
+    const booking = await bookingModel.create({
       user: userId,
+      username: user.username,
       venue: venueId,
       eventDate,
       startTime,
       endTime,
       status: 'Pending'
     });
-  
-    res.send(`Booking created successfully: ${booking._id}`);
-  });
+
+    res.send(`✅ Booking created successfully: ${booking._id}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("❌ Something went wrong");
+  }
+});
+
   
 
 app.listen(4001, () => {

@@ -15,16 +15,20 @@ const bookingSchema = new mongoose.Schema({
     ref: 'Venue',
     required: true
   },
+  venueName: { // 🔥 optional: easy to query by name without populating
+    type: String,
+    required: true
+  },
   eventDate: {
     type: Date,
     required: true
   },
   startTime: {
-    type: String, // Example: "14:00"
+    type: String, // e.g., "14:00"
     required: true
   },
   endTime: {
-    type: String, // Example: "17:00"
+    type: String, // e.g., "17:00"
     required: true
   },
   status: {
