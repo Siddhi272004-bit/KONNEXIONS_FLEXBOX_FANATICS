@@ -1,1 +1,43 @@
-https://konnexions-flexbox-fanatics.vercel.app/
+LIVE LINK:https://konnexions-flexbox-fanatics-ggbf.vercel.app/
+# 📊 Vendor Dashboard - BookEasy
+
+A sleek and responsive vendor dashboard built for the **BookEasy** platform. This dashboard enables vendors to monitor bookings, view performance stats, and manage upcoming events efficiently.
+
+---
+
+## 🚀 Features
+
+- ✅ Vendor authentication and personalized data fetching
+- 📅 Displays upcoming events with booking insights
+- 📈 Tracks performance stats like revenue, occupancy, and ratings
+- 💼 Shows recent bookings with status updates
+- ➕ Allows vendors to add new events
+- 🔄 Fully responsive and user-friendly interface
+- 🧩 Integrated with Font Awesome for modern icons
+
+---
+
+## 🧪 Tech Stack
+
+- HTML5
+- CSS3
+- Vanilla JavaScript
+- Font Awesome (for icons)
+- Backend (e.g., Node.js/Express) with REST API endpoints
+
+---
+
+## ⚙️ API Endpoints (Expected)
+
+Your backend should provide the following endpoints to power the dashboard:
+
+- `GET /getVendorData` – Fetches vendor's basic info
+- `GET /getVendorStats` – Returns revenue, occupancy, rating data
+- `GET /getVendorEvents` – Lists vendor’s upcoming events
+
+---
+
+
+
+
+
