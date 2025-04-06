@@ -261,6 +261,39 @@ app.get('/venue/:id', async (req, res) => {
   }
 });
 
+// Add these to app.js
+
+// Cancel booking
+app.post('/cancelBooking/:id', async (req, res) => {
+  try {
+    const booking = await bookingModel.findByIdAndUpdate(
+      req.params.id,
+      { status: 'Cancelled' },
+      { new: true }
+    );
+    
+    if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
+    
+    res.json({ success: true, booking });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Error cancelling booking' });
+  }
+});
+
+// Get booking details
+app.get('/booking/:id', async (req, res) => {
+  try {
+    const booking = await bookingModel.findById(req.params.id).populate('venue user');
+    if (!booking) return res.status(404).send("Booking not found");
+    
+    res.json(booking);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching booking");
+  }
+});
+
 
 app.listen(4001, () => {
     console.log("Server is running on http://localhost:4001");
