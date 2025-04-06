@@ -194,6 +194,29 @@ app.post('/addVenue', verifyVendor, async (req, res) => {
     }
 });
 
+// Update login responses to return JSON
+app.post('/loginVendor', async function (req, res) {
+    let vendor = await vendorModel.findOne({ email: req.body.email });
+    if (!vendor) return res.json({ success: false, message: "Vendor not found!" });
+
+    bcrypt.compare(req.body.password, vendor.password, function (err, result) {
+        if (result) {
+            let token = jwt.sign({ email: vendor.email }, "shhh");
+            res.cookie("token", token);
+            res.json({ 
+              success: true, 
+              message: `Welcome vendor ${vendor.username}!`,
+              vendor: {
+                username: vendor.username,
+                email: vendor.email
+              }
+            });
+        } else {
+            res.json({ success: false, message: "Invalid credentials" });
+        }
+    });
+});
+
 app.listen(4001, () => {
     console.log("Server running on http://localhost:4001");
 });
