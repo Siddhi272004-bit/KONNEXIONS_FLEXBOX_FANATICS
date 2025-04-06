@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vendor Dashboard - BookEasy</title>
   <link rel="stylesheet" href="styles.css">
-  
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
   <header class="navbar">
@@ -23,12 +24,14 @@
   <main class="dashboard-container">
     <aside class="sidebar">
       <div class="user-profile">
+        <h3 class="user-name">Vendor</h3>
+        <p class="user-email">vendor@example.com</p>
       </div>
     </aside>
 
     <div class="dashboard-content">
       <div class="dashboard-header">
-        <h1>Business Dashboard</h1>
+        <h1>Welcome, Vendor</h1>
         <a href="add-event.html" class="add-event-btn">
           <i class="fas fa-plus"></i> Add New Event
         </a>
@@ -115,7 +118,6 @@
               </div>
             </div>
           </div>
-          </div>
         </div>
       </section>
 
@@ -140,9 +142,7 @@
                 <td>June 15, 7:00 AM</td>
                 <td><span class="status confirmed">Confirmed</span></td>
                 <td>$25.00</td>
-                <td>
-                  <button class="btn secondary small">Details</button>
-                </td>
+                <td><button class="btn secondary small">Details</button></td>
               </tr>
               <tr>
                 <td>Rahul</td>
@@ -150,13 +150,15 @@
                 <td>June 15, 6:00 PM</td>
                 <td><span class="status confirmed">Confirmed</span></td>
                 <td>$25.00</td>
-                <td>
-                  <button class="btn secondary small">Details</button>
-                </td>
+                <td><button class="btn secondary small">Details</button></td>
               </tr>
               <tr>
-                  <button class="btn secondary small">Details</button>
-                </td>
+                <td>Aarav</td>
+                <td>Evening Pilates</td>
+                <td>June 16, 5:00 PM</td>
+                <td><span class="status pending">Pending</span></td>
+                <td>$20.00</td>
+                <td><button class="btn secondary small">Details</button></td>
               </tr>
             </tbody>
           </table>
@@ -194,45 +196,39 @@
     </div>
   </footer>
 
-  // In vendor-dashboard.html
-<!-- Add this before closing body tag -->
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Fetch vendor data
-    fetch('http://localhost:4001/getVendorData', {
-      credentials: 'include'
-    })
-    .then(response => {
-      if (!response.ok) {
+  <!-- Vendor data fetching script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      fetch('http://localhost:4001/getVendorData', {
+        credentials: 'include'
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Not authenticated');
+        }
+        return response.json();
+      })
+      .then(data => {
+        document.querySelector('.user-name').textContent = data.vendor.username;
+        document.querySelector('.user-email').textContent = data.vendor.email;
+        document.querySelector('h1').textContent = `Welcome, ${data.vendor.username}`;
+
+        fetchVendorStats();
+        fetchVendorEvents();
+      })
+      .catch(error => {
+        console.error('Error:', error);
         window.location.href = 'vendor.html';
-        throw new Error('Not authenticated');
+      });
+
+      function fetchVendorStats() {
+        // Fetch and update stats
       }
-      return response.json();
-    })
-    .then(data => {
-      // Update vendor info
-      document.querySelector('.user-name').textContent = data.vendor.username;
-      document.querySelector('.user-profile h3').textContent = data.vendor.username;
-      document.querySelector('.user-profile p').textContent = data.vendor.email;
-      document.querySelector('h1').textContent = `Welcome, ${data.vendor.username}`;
-      
-      // Fetch and display vendor's events and stats
-      fetchVendorStats();
-      fetchVendorEvents();
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      window.location.href = 'vendor.html';
+
+      function fetchVendorEvents() {
+        // Fetch and display vendor's events
+      }
     });
-    
-    function fetchVendorStats() {
-      // Fetch and update stats
-    }
-    
-    function fetchVendorEvents() {
-      // Fetch and display vendor's events
-    }
-  });
-</script>
+  </script>
 </body>
 </html>
