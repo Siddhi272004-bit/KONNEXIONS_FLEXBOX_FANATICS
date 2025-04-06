@@ -34,16 +34,25 @@ app.post('/createUser', async (req, res) => {
     try {
         const { username, email, password } = req.body;
         const existing = await userModel.findOne({ email });
-        if (existing) return res.status(400).send("Email already registered");
+        if (existing) return res.status(400).json({ success: false, message: "Email already registered" });
 
         const hash = await bcrypt.hash(password, 10);
         const user = await userModel.create({ username, email, password: hash });
 
         const token = jwt.sign({ email }, "shhh");
         res.cookie("token", token);
-        res.send(user);
+
+        // Send structured response
+        res.json({
+            success: true,
+            message: "Registration successful",
+            user: {
+                username: user.username,
+                email: user.email
+            }
+        });
     } catch (err) {
-        res.status(500).send("Server Error");
+        res.status(500).json({ success: false, message: "Server Error" });
     }
 });
 
