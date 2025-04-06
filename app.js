@@ -210,7 +210,60 @@ app.post('/addVenue', verifyVendor, async (req, res) => {
     }
 });
 
+// Add these new routes to your existing app.js
+
+// Search venues
+app.get('/searchVenues', async (req, res) => {
+  const { term, category } = req.query;
+  
+  try {
+    let query = {};
+    if (term) query.name = { $regex: term, $options: 'i' };
+    if (category && category !== 'All Categories') query.category = category;
+    
+    const venues = await venueModel.find(query);
+    res.json(venues);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error searching venues");
+  }
+});
+
+// Get user dashboard data
+app.get('/userDashboardData', async (req, res) => {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).send("Not authenticated");
+
+  try {
+    const decoded = jwt.verify(token, "shhh");
+    const user = await userModel.findOne({ email: decoded.email });
+    
+    const bookings = await bookingModel.find({ user: user._id })
+      .populate('venue')
+      .sort({ eventDate: 1 });
+    
+    res.json({ user, bookings });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error loading dashboard");
+  }
+});
+
+// Get venue details
+app.get('/venue/:id', async (req, res) => {
+  try {
+    const venue = await venueModel.findById(req.params.id);
+    if (!venue) return res.status(404).send("Venue not found");
+    res.json(venue);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching venue");
+  }
+});
+
 
 app.listen(4001, () => {
     console.log("Server is running on http://localhost:4001");
 });
+
+
