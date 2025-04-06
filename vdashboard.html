@@ -193,5 +193,38 @@
       <p>&copy; 2025 BookEasy Business. All rights reserved.</p>
     </div>
   </footer>
+
+  // In vendor-dashboard.html
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    fetch('http://localhost:4001/vendorDashboardData', {
+      credentials: 'include'
+    })
+    .then(response => {
+      if (!response.ok) {
+        window.location.href = 'vendor.html';
+        throw new Error('Not authenticated');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Update vendor info
+      document.querySelector('.user-name').textContent = data.vendor;
+      
+      // Render venues and stats
+      updateStats(data.stats);
+      renderVenues(data.venues);
+    })
+    .catch(error => console.error('Error:', error));
+  });
+
+  function updateStats(stats) {
+    // Update the stats cards with real data
+  }
+
+  function renderVenues(venues) {
+    // Render the venues in the events grid
+  }
+</script>
 </body>
 </html>
