@@ -38,6 +38,8 @@ Your backend should provide the following endpoints to power the dashboard:
 ---
 
 
+##NOTE
+This project was developed as part of our Hackathon. While we've implemented core functionality, we were not able to link the frontend and the backend properly and hence could not deploy the project properly due to time constraints and technical challenges.
 
 
 
