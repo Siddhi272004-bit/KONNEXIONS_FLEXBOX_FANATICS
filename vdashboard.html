@@ -195,9 +195,11 @@
   </footer>
 
   // In vendor-dashboard.html
+<!-- Add this before closing body tag -->
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    fetch('http://localhost:4001/vendorDashboardData', {
+    // Fetch vendor data
+    fetch('http://localhost:4001/getVendorData', {
       credentials: 'include'
     })
     .then(response => {
@@ -209,22 +211,28 @@
     })
     .then(data => {
       // Update vendor info
-      document.querySelector('.user-name').textContent = data.vendor;
+      document.querySelector('.user-name').textContent = data.vendor.username;
+      document.querySelector('.user-profile h3').textContent = data.vendor.username;
+      document.querySelector('.user-profile p').textContent = data.vendor.email;
+      document.querySelector('h1').textContent = `Welcome, ${data.vendor.username}`;
       
-      // Render venues and stats
-      updateStats(data.stats);
-      renderVenues(data.venues);
+      // Fetch and display vendor's events and stats
+      fetchVendorStats();
+      fetchVendorEvents();
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+      console.error('Error:', error);
+      window.location.href = 'vendor.html';
+    });
+    
+    function fetchVendorStats() {
+      // Fetch and update stats
+    }
+    
+    function fetchVendorEvents() {
+      // Fetch and display vendor's events
+    }
   });
-
-  function updateStats(stats) {
-    // Update the stats cards with real data
-  }
-
-  function renderVenues(venues) {
-    // Render the venues in the events grid
-  }
 </script>
 </body>
 </html>
