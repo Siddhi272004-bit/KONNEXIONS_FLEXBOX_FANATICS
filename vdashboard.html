@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vendor Dashboard - BookEasy</title>
+  <link rel="stylesheet" href="styles.css">
+  
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">BookEasy Vendors</div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="events.html">My Events</a></li>
+        <li><a href="bookings.html">Bookings</a></li>
+        <li><a href="reports.html">Reports</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="dashboard-container">
+    <aside class="sidebar">
+      <div class="user-profile">
+      </div>
+    </aside>
+
+    <div class="dashboard-content">
+      <div class="dashboard-header">
+        <h1>Business Dashboard</h1>
+        <a href="add-event.html" class="add-event-btn">
+          <i class="fas fa-plus"></i> Add New Event
+        </a>
+      </div>
+      
+      <section class="analytics-summary">
+        <h2>Business Overview</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3>Total Bookings</h3>
+            <div class="value">142</div>
+            <p>+12% from last month</p>
+          </div>
+          <div class="stat-card">
+            <h3>Revenue</h3>
+            <div class="value">$3,850</div>
+            <p>+8% from last month</p>
+          </div>
+          <div class="stat-card">
+            <h3>Occupancy Rate</h3>
+            <div class="value">78%</div>
+            <p>5% increase</p>
+          </div>
+          <div class="stat-card">
+            <h3>Customer Rating</h3>
+            <div class="value">4.8/5</div>
+            <p>From 24 reviews</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="upcoming-events">
+        <div class="section-header">
+          <h2>Your Upcoming Events</h2>
+          <a href="events.html">View All <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="events-grid">
+          <div class="event-card">
+            <img src="gym.jpg" alt="Gym Class">
+            <div class="event-details">
+              <h3>Morning HIIT Session</h3>
+              <div class="event-meta">
+                <p><i class="fas fa-calendar-day"></i> June 15 • 7:00 AM</p>
+                <p><i class="fas fa-user-friends"></i> 12/15 spots booked</p>
+              </div>
+              <div class="event-stats">
+                <div class="stat-item">
+                  <div class="stat-value">12</div>
+                  <div class="stat-label">Bookings</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">$300</div>
+                  <div class="stat-label">Revenue</div>
+                </div>
+              </div>
+              <div class="event-actions">
+                <button class="btn secondary">Manage</button>
+                <button class="btn primary">Promote</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="event-card">
+            <img src="yoga.jpg" alt="Yoga Class">
+            <div class="event-details">
+              <h3>Sunset Yoga</h3>
+              <div class="event-meta">
+                <p><i class="fas fa-calendar-day"></i> June 15 • 6:00 PM</p>
+                <p><i class="fas fa-user-friends"></i> 8/10 spots booked</p>
+              </div>
+              <div class="event-stats">
+                <div class="stat-item">
+                  <div class="stat-value">8</div>
+                  <div class="stat-label">Bookings</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">$200</div>
+                  <div class="stat-label">Revenue</div>
+                </div>
+              </div>
+              <div class="event-actions">
+                <button class="btn secondary">Manage</button>
+                <button class="btn primary">Promote</button>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="recent-bookings">
+        <h2>Recent Bookings</h2>
+        <div class="bookings-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Event</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Amount</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Sarah</td>
+                <td>Morning HIIT Session</td>
+                <td>June 15, 7:00 AM</td>
+                <td><span class="status confirmed">Confirmed</span></td>
+                <td>$25.00</td>
+                <td>
+                  <button class="btn secondary small">Details</button>
+                </td>
+              </tr>
+              <tr>
+                <td>Rahul</td>
+                <td>Sunset Yoga</td>
+                <td>June 15, 6:00 PM</td>
+                <td><span class="status confirmed">Confirmed</span></td>
+                <td>$25.00</td>
+                <td>
+                  <button class="btn secondary small">Details</button>
+                </td>
+              </tr>
+              <tr>
+                  <button class="btn secondary small">Details</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-logo">BookEasy Business</div>
+      <div class="footer-links">
+        <div class="link-group">
+          <h4>Resources</h4>
+          <a href="#">Business Help Center</a>
+          <a href="#">Marketing Tips</a>
+          <a href="#">Success Stories</a>
+        </div>
+        <div class="link-group">
+          <h4>Support</h4>
+          <a href="#">Contact Support</a>
+          <a href="#">Service Status</a>
+          <a href="#">Community</a>
+        </div>
+        <div class="link-group">
+          <h4>Legal</h4>
+          <a href="#">Partner Agreement</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 BookEasy Business. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
