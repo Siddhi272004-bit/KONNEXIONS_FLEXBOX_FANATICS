@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const app = express(); // ✅ only call express once
+const app = express();
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -8,17 +8,16 @@ const path = require('path');
 const QRCode = require('qrcode');
 
 const userModel = require('./models/user');
-const vendorModel = require('./models/vendor'); // ✅ corrected
+const vendorModel = require('./models/vendor');
 const bookingModel = require('./models/Booking');
-const venueModel = require('./models/venue'); // ✅ Make sure it's imported
+const venueModel = require('./models/venue');
 
 app.set("view engine", "ejs");
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json()); // ✅ needed for JSON body parsing
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ✅ MongoDB connection
 mongoose.connect('mongodb+srv://s51741248:h2ZNgA7GILexRGbN@cluster0.82ebe.mongodb.net/Cluster0?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -26,98 +25,89 @@ mongoose.connect('mongodb+srv://s51741248:h2ZNgA7GILexRGbN@cluster0.82ebe.mongod
 .then(() => console.log("MongoDB connected successfully"))
 .catch(err => console.log(err));
 
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
     res.send("Welcome!");
 });
 
-app.post('/createUser', (req, res) => {
-    let { username, email, password } = req.body;
-    bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(password, salt, async (err, hash) => {
-            let user = await userModel.create({
-                username,
-                email,
-                password: hash
-            });
-            let token = jwt.sign({ email }, "shhh");
-            res.cookie("token", token);
-            res.send(user);
-        });
-    });
+// ✅ Create user account
+app.post('/createUser', async (req, res) => {
+    try {
+        const { username, email, password } = req.body;
+        const existing = await userModel.findOne({ email });
+        if (existing) return res.status(400).send("Email already registered");
+
+        const hash = await bcrypt.hash(password, 10);
+        const user = await userModel.create({ username, email, password: hash });
+
+        const token = jwt.sign({ email }, "shhh");
+        res.cookie("token", token);
+        res.send(user);
+    } catch (err) {
+        res.status(500).send("Server Error");
+    }
 });
 
-app.post('/createVendor', (req, res) => {
-    let { username, email, password, vendorID } = req.body;
-    bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(password, salt, async (err, hash) => {
-            let vendor = await vendorModel.create({
-                username,
-                email,
-                vendorID,
-                password: hash
-            });
-            let token = jwt.sign({ email }, "shhh");
-            res.cookie("token", token);
-            res.send(vendor);
-        });
-    });
+// ✅ Create vendor account
+app.post('/createVendor', async (req, res) => {
+    try {
+        const { username, email, password, vendorID } = req.body;
+        const existing = await vendorModel.findOne({ email });
+        if (existing) return res.status(400).send("Vendor email already registered");
+
+        const hash = await bcrypt.hash(password, 10);
+        const vendor = await vendorModel.create({ username, email, vendorID, password: hash });
+
+        const token = jwt.sign({ email }, "shhh");
+        res.cookie("token", token);
+        res.send(vendor);
+    } catch (err) {
+        res.status(500).send("Server Error");
+    }
 });
 
-// USER login
-app.get('/loginUser', function (req, res) {
-    res.render('login');
-});
-
-app.post('/loginUser', async function (req, res) {
-    let user = await userModel.findOne({ email: req.body.email });
+// ✅ User login
+app.post('/loginUser', async (req, res) => {
+    const user = await userModel.findOne({ email: req.body.email });
     if (!user) return res.send("User not found!");
 
-    bcrypt.compare(req.body.password, user.password, function (err, result) {
-        if (result) {
-            let token = jwt.sign({ email: user.email }, "shhh");
-            res.cookie("token", token);
-            res.send(`Welcome back, ${user.username}!`);
-        } else {
-            res.send("Invalid credentials");
-        }
-    });
+    const match = await bcrypt.compare(req.body.password, user.password);
+    if (match) {
+        const token = jwt.sign({ email: user.email }, "shhh");
+        res.cookie("token", token);
+        res.send(`Welcome back, ${user.username}!`);
+    } else {
+        res.send("Invalid credentials");
+    }
 });
 
-// VENDOR login
-app.get('/loginVendor', function (req, res) {
-    res.render('login');
-});
-
-app.post('/loginVendor', async function (req, res) {
-    let vendor = await vendorModel.findOne({ email: req.body.email });
+// ✅ Vendor login
+app.post('/loginVendor', async (req, res) => {
+    const vendor = await vendorModel.findOne({ email: req.body.email });
     if (!vendor) return res.send("Vendor not found!");
 
-    bcrypt.compare(req.body.password, vendor.password, function (err, result) {
-        if (result) {
-            let token = jwt.sign({ email: vendor.email }, "shhh");
-            res.cookie("token", token);
-            res.send(`Welcome vendor ${vendor.username}!`);
-        } else {
-            res.send("Invalid credentials");
-        }
-    });
+    const match = await bcrypt.compare(req.body.password, vendor.password);
+    if (match) {
+        const token = jwt.sign({ email: vendor.email }, "shhh");
+        res.cookie("token", token);
+        res.send(`Welcome vendor ${vendor.username}!`);
+    } else {
+        res.send("Invalid credentials");
+    }
 });
 
-// Logout
-app.get('/logoutUser', function (req, res) {
-    res.cookie("token", "");
+// ✅ Logout
+app.get('/logoutUser', (req, res) => {
+    res.clearCookie("token");
+    res.redirect("/");
+});
+app.get('/logoutVendor', (req, res) => {
+    res.clearCookie("token");
     res.redirect("/");
 });
 
-app.get('/logoutVendor', function (req, res) {
-    res.cookie("token", "");
-    res.redirect("/");
-});
-
-// EVENT BOOKING
+// ✅ Booking
 app.post('/bookVenue', async (req, res) => {
     const { userId, venueId, eventDate, startTime, endTime } = req.body;
-
     try {
         const venue = await venueModel.findById(venueId);
         if (!venue) return res.status(404).send("Venue not found");
@@ -152,7 +142,6 @@ app.post('/bookVenue', async (req, res) => {
         const qrImage = await QRCode.toDataURL(qrText);
 
         booking.qrCode = qrImage;
-
         await booking.save();
 
         res.send(`✅ Booking created successfully with QR: ${booking._id}`);
@@ -161,7 +150,6 @@ app.post('/bookVenue', async (req, res) => {
         res.status(500).send("❌ Something went wrong");
     }
 });
-
 
 // ✅ Vendor auth middleware
 function verifyVendor(req, res, next) {
@@ -177,7 +165,7 @@ function verifyVendor(req, res, next) {
     }
 }
 
-// ✅ Get Vendor Dashboard Data
+// ✅ Vendor dashboard data
 app.get('/vendorDashboardData', verifyVendor, async (req, res) => {
     try {
         const vendor = await vendorModel.findOne({ email: req.vendorEmail });
@@ -189,114 +177,23 @@ app.get('/vendorDashboardData', verifyVendor, async (req, res) => {
     }
 });
 
-// ✅ Add new venue
+// ✅ Add venue route (example structure)
 app.post('/addVenue', verifyVendor, async (req, res) => {
     const { name, location, capacity } = req.body;
-
     try {
         const vendor = await vendorModel.findOne({ email: req.vendorEmail });
-
-        await venueModel.create({
+        const venue = await venueModel.create({
             name,
             location,
             capacity,
             vendor: vendor._id
         });
-
-        res.status(201).send("Venue added successfully");
+        res.send(venue);
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Error adding venue");
+        res.status(500).send("Could not add venue");
     }
 });
 
-// Add these new routes to your existing app.js
-
-// Search venues
-app.get('/searchVenues', async (req, res) => {
-  const { term, category } = req.query;
-  
-  try {
-    let query = {};
-    if (term) query.name = { $regex: term, $options: 'i' };
-    if (category && category !== 'All Categories') query.category = category;
-    
-    const venues = await venueModel.find(query);
-    res.json(venues);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error searching venues");
-  }
-});
-
-// Get user dashboard data
-app.get('/userDashboardData', async (req, res) => {
-  const token = req.cookies.token;
-  if (!token) return res.status(401).send("Not authenticated");
-
-  try {
-    const decoded = jwt.verify(token, "shhh");
-    const user = await userModel.findOne({ email: decoded.email });
-    
-    const bookings = await bookingModel.find({ user: user._id })
-      .populate('venue')
-      .sort({ eventDate: 1 });
-    
-    res.json({ user, bookings });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error loading dashboard");
-  }
-});
-
-// Get venue details
-app.get('/venue/:id', async (req, res) => {
-  try {
-    const venue = await venueModel.findById(req.params.id);
-    if (!venue) return res.status(404).send("Venue not found");
-    res.json(venue);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error fetching venue");
-  }
-});
-
-// Add these to app.js
-
-// Cancel booking
-app.post('/cancelBooking/:id', async (req, res) => {
-  try {
-    const booking = await bookingModel.findByIdAndUpdate(
-      req.params.id,
-      { status: 'Cancelled' },
-      { new: true }
-    );
-    
-    if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
-    
-    res.json({ success: true, booking });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: 'Error cancelling booking' });
-  }
-});
-
-// Get booking details
-app.get('/booking/:id', async (req, res) => {
-  try {
-    const booking = await bookingModel.findById(req.params.id).populate('venue user');
-    if (!booking) return res.status(404).send("Booking not found");
-    
-    res.json(booking);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error fetching booking");
-  }
-});
-
-
 app.listen(4001, () => {
-    console.log("Server is running on http://localhost:4001");
+    console.log("Server running on http://localhost:4001");
 });
-
-
