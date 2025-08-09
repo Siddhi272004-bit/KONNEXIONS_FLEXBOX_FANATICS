@@ -9,16 +9,26 @@ const CustomerLogin = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // const handleCustomerLogin = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const res = await axios.post('/api/users/login', { email, password })
+  //       .then(res => {
+  //           localStorage.setItem('userInfo', JSON.stringify(res.data));
+  //           navigate('/CustomerDashboard');
+  //       })
+  //   .catch(err => {
+  //   setError("Invalid customer credentials");
+  // });
   const handleCustomerLogin = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.post('/api/users/login', { email, password })
-        .then(res => {
-            localStorage.setItem('userInfo', JSON.stringify(res.data));
-            navigate('/CustomerDashboard');
-        })
+      localStorage.setItem('userInfo', JSON.stringify(res.data));
+      navigate('/CustomerDashboard');
+    }
     .catch(err => {
-    setError("Invalid customer credentials");
+    setError(err.response?.data?.message ||"Invalid customer credentials");
   });
 
       alert(`Welcome, ${res.data.name}`);
@@ -44,3 +54,4 @@ const CustomerLogin = () => {
 };
 
 export default CustomerLogin;
+
